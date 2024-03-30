@@ -40,6 +40,6 @@ class Book(Base):
     category_id = Column(Integer, ForeignKey("book_categories.id", ondelete="CASCADE"), nullable=False)
     
     owner =  relationship("User")
-    category - relationship("BookCategory")
+    category = relationship("BookCategory")
 
 # endregion

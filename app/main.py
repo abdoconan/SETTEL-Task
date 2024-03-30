@@ -1,8 +1,13 @@
 from fastapi import FastAPI
 from .Routers import book, user
-
+from . import models, database
 
 app = FastAPI()
+
+
+# For simplicity, we're employing a straightforward migration approach.
+# However, for complex database migration handling I will be using alembic
+models.Base.metadata.create_all(bind= database.engine)
 
 
 # rounters registers 

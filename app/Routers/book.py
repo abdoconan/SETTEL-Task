@@ -1,4 +1,4 @@
-from fastapi import FastApi, Response, status, HTTPException, Depends, APIRouter
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 
 from sqlalchemy.orm import Session
 
@@ -32,7 +32,7 @@ def books(db: Session = Depends(database.get_db)
         .all() 
         
         
-@router("/get", response_model = sechemaes.BookGet)
+@router.get("/get", response_model=sechemaes.BookGet)
 def book(book_id: int, db: Session = Depends(database.get_db)):
     book = db.query(models.Book).filter(id == book_id).first()
     if not book:

@@ -1,7 +1,7 @@
-from passlib.context import CryptoContext
+from passlib.context import CryptContext
 from datetime import datetime
 
-PWD_CONTEXT = CryptoContext(schemas=['bcrypt'], deprecated="auto")
+PWD_CONTEXT = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
 def get_current_datetime() -> datetime:
     return datetime.utcnow()
