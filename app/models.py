@@ -11,7 +11,7 @@ class User(Base):
     
     id = Column(Integer, primary_key=True,  nullable=False)
     email = Column(String(512), unique=True, nullable=False)
-    user_name = Column(String(512), unique=True, nullable=False)
+    username = Column(String(512), unique=True, nullable=False)
     password = Column(String(512))
     current_token = Column(String, nullable=True)
     last_action_time = Column(TIMESTAMP(timezone= True), nullable=True)

@@ -15,6 +15,19 @@ class Token(BaseModel):
         from_attributes = True
 # endregion
 
+# region: User
+class UserBase(BaseModel):
+    username: str
+    email: EmailStr
+    
+class UserCreate(UserBase):
+    password : str
+    
+class UserGet(UserBase):
+    id: int
+
+# endregion
+
 # region: Book Category
 class BookCategoryBase(BaseModel):
     description: str
