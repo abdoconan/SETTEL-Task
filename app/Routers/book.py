@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter, Query
 
 from sqlalchemy.orm import Session
 
@@ -14,10 +14,10 @@ router = APIRouter(
 
 @router.get("/list", response_model=List[sechemaes.BookGet])
 def books(db: Session = Depends(database.get_db) 
-          , limit: int = 10
-          , skip: int = 0
-          , category_id: Optional[int] = None
-          , owners_ids: Optional[List[int]] = None):
+          , limit: int = Query(10, ge=1, le=100)
+          , skip: int = Query(0, ge=1)
+          , category_id: Optional[int] = Query(None, ge=1)
+          , owners_ids: Optional[List[int]] = Query(None)):
     query = db.query(models.Book) \
         .join(models.BookCategory, models.Book.category_id == models.BookCategory.id, isouter = True) \
         .group_by(models.Book.id)
