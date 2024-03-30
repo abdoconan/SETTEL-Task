@@ -16,7 +16,7 @@ def create_access_token(token_data: dict = {}):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def update_user_login_data(user: models.User, token: str, db: Session = Depends(database.get_db)):
+def update_user_login_data(user: models.User, token: str, db: Session):
     user.current_token =  token
     user.last_action_time = datetime.utcnow()
     db.commit()

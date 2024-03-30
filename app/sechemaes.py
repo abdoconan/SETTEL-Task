@@ -48,7 +48,6 @@ class BookCategoryGet(BookCategoryBase):
 # region: Book
 
 class BookBase(BaseModel):
-    
     title: str
     preif: str
     created_at: datetime = get_current_datetime
@@ -62,6 +61,7 @@ class BookBase(BaseModel):
 class BookGet(BookBase):
     id: int
     category: BookCategoryGet
+    owner: UserGet
     
     class Config:
         from_attributes = True

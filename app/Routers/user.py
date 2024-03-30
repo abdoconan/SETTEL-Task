@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 def is_user_exists(user_details : sechemaes.UserCreate
-                   , db: Session = Depends(database.get_db)
+                   , db: Session
                    ) -> bool :
     conditions = or_(models.User.username == user_details.username, 
                      models.User.email == user_details.email) 
@@ -32,7 +32,7 @@ def login(user_credentials : OAuth2PasswordRequestForm = Depends()
     """
     conditions = or_(models.User.username == user_credentials.username, models.User.email == user_credentials.username)
     user = db.query(models.User).filter(conditions).first()
-    validated_credentials =  (user is not None and utils.verify(user_credentials.password, user.password))
+    validated_credentials =  (user is not None and utils.verify_text(user_credentials.password, user.password))
     if not validated_credentials:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
@@ -40,17 +40,18 @@ def login(user_credentials : OAuth2PasswordRequestForm = Depends()
     token = oauth2.create_access_token({
         "user_id" : user.id
     })
-    oauth2.update_user_login_data(user, token)
-    return {"access_token" : access_token}
+    oauth2.update_user_login_data(user, token, db)
+    return {"access_token" : token}
 
 @router.post("/signUp", response_model=sechemaes.UserGet, status_code=status.HTTP_201_CREATED)
 def create_user(user_details: sechemaes.UserCreate
                 , db: Session = Depends(database.get_db)
                 ):
-    if is_user_exists(user_details):
+    if is_user_exists(user_details, db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User with provided details already exists")
     new_user = models.User(**user_details.dict())
+    new_user.password = utils.hash(new_user.password)
     db.add(new_user)
     db.commit()
-    db.refresh()
+    db.refresh(new_user)
     return new_user

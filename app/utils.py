@@ -12,4 +12,4 @@ def hash(plain_text: str) -> str:
 
 
 def verify_text(plain_text: str, hashed_text: str) -> bool:
-    return PWD_CONTEXT.verify_text(plain_text, hashed_text)
+    return PWD_CONTEXT.verify(plain_text, hashed_text)

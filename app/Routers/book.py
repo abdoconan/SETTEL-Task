@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from typing import List, Optional
 
-from .. import sechemaes, models, database
+from .. import sechemaes, models, database, oauth2
 
 router = APIRouter(
     prefix="/books", 
@@ -19,8 +19,7 @@ def books(db: Session = Depends(database.get_db)
           , category_id: Optional[int] = Query(None, ge=1)
           , owners_ids: Optional[List[int]] = Query(None)):
     query = db.query(models.Book) \
-        .join(models.BookCategory, models.Book.category_id == models.BookCategory.id, isouter = True) \
-        .group_by(models.Book.id)
+        .join(models.BookCategory, models.Book.category_id == models.BookCategory.id) 
     if category_id is not None:
         query = query.filter(models.Book.category_id == category_id)
     if owner_id is not None:
@@ -40,3 +39,17 @@ def book(book_id: int, db: Session = Depends(database.get_db)):
     
     return book
 
+
+@router.post("/new", response_model=sechemaes.BookGet, status_code= status.HTTP_201_CREATED)
+def create_book(book : sechemaes.BookBase
+                , db: Session = Depends(database.get_db)
+                , current_user: models.User = Depends(oauth2.get_current_user)):
+    new_book = models.Book(**book.dict())
+    db.add(new_book)
+    db.commit()
+    db.refresh(new_book)
+    return db.query(models.Book) \
+        .filter(models.Book.id == new_book.id) \
+        .join(models.BookCategory, models.Book.category_id == models.BookCategory.id) \
+        .join(models.User, models.User.id == models.Book.owner_id) \
+        .first()
