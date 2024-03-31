@@ -1,12 +1,14 @@
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from . import sechemaes, database, models
+from . import sechemaes, database, models, config
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-SECRET_KEY = "ak9aZUnOe(?E6!Vc.:dq}]D2.T@c?;&mCl8d5ZD7lKK99/PE)""1(<MuJ.neS%`"
-ALGORITHM = "HS256"
+setting = config.settings
+
+SECRET_KEY = setting.SECRET_KEY
+ALGORITHM = setting.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
 
 oauth2_sechema = OAuth2PasswordBearer(tokenUrl="users/login")
@@ -38,6 +40,8 @@ def get_current_user(token: str = Depends(oauth2_sechema)
     user_id = verify_access_token(token, credentials_exception)
     
     user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user.last_action_time > (datetime.utcnow() +  timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
+        raise credentials_exception
     user.last_action_time += timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     db.commit()
     return user
