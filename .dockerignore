@@ -1,0 +1,11 @@
+__pycache__
+.env
+.gitignore
+.git
+BookStore.db
+LICENSE
+README.md
+.dockerignore
+Dockerfile
+venv/
+
