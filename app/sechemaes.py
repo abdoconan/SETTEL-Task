@@ -51,15 +51,16 @@ class BookBase(BaseModel):
     title: str
     preif: str
     created_at: datetime = get_current_datetime
-    owner_id : int 
     category_id : int
     
     class Config:
         from_attributes = True
     
-
-class BookGet(BookBase):
+class BookUpdate(BookBase):
     id: int
+
+class BookGet(BookUpdate):
+    owner_id : int 
     category: BookCategoryGet
     owner: UserGet
     

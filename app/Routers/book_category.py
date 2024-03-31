@@ -13,12 +13,12 @@ router = APIRouter(
 
 
 @router.get("/list", response_model=List[sechemaes.BookCategoryGet])
-def books(db: Session = Depends(database.get_db)):
+def book_categories(db: Session = Depends(database.get_db)):
     return db.query(models.BookCategory).all()
 
 
 @router.post("/create", response_model=sechemaes.BookCategoryGet)
-def books(new_book: sechemaes.BookCategoryBase, db: Session = Depends(database.get_db)):
+def book_category_create(new_book: sechemaes.BookCategoryBase, db: Session = Depends(database.get_db)):
     new_book = models.BookCategory(**new_book.dict())
     db.add(new_book)
     db.commit()
