@@ -80,3 +80,15 @@ def test_login_with_username(client, test_user1):
     assert id == test_user1["id"], "User ID in the payload doesn't match expected"
     assert login_res.token_type == "bearer", "Token type is not 'bearer'"
     
+@pytest.mark.parametrize("email, password, status_code", [
+    ('abdo1@gmail.com', 'password123', 200),
+    ('abdo1@gmail.com', 'wrongpassword', 403),
+    ('wrongemail@gmail.com', 'wrongpassword', 403),
+    (None, 'password123', 422),
+    ('abdo1@gmail.com', None, 422)
+])
+def test_incorrect_login(test_user1, client, email, password, status_code):
+    res = client.post(
+        "/users/login", data={"username": email, "password": password})
+
+    assert res.status_code == status_code
