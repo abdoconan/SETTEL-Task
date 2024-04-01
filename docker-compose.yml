@@ -7,7 +7,7 @@ services:
     volumes:
       - settel_volumn:/usr/src/app
     environment:
-      - SECRET_KEY=ak9aZUnOe(?E6!Vc.:dq}]D2.T@c?;&mCl8d5ZD7lKK99/PE)""1(<MuJ.neS%`
+      - SECRET_KEY=ak9aZUnOe(?E6!Vc.:dq}]D2.T@c?;&mCl8d5ZD7lKK99/PE)1(<MuJ.neS%`
       - ALGORITHM=HS256
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
