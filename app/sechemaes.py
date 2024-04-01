@@ -49,7 +49,7 @@ class BookCategoryGet(BookCategoryBase):
 
 class BookBase(BaseModel):
     title: str
-    preif: str
+    brief: str
     created_at: datetime = get_current_datetime
     category_id : int
     

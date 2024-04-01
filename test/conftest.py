@@ -10,6 +10,7 @@ from app.database import get_db
 from app.database import Base
 from app.oauth2 import create_access_token
 from app import models
+from datetime import datetime
 
 
 # SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:password123@localhost:5432/fastapi_test'
@@ -68,11 +69,19 @@ def test_user2(client):
 
 
 @pytest.fixture
-def token(test_user1):
+def token(test_user1, session):
+    session.query(models.User) \
+        .filter(models.User.id == test_user1["id"]) \
+        .update({models.User.last_action_time: datetime.utcnow()})    
+    session.commit()
     return create_access_token({"user_id": test_user1['id']})
 
 @pytest.fixture
-def token2(test_user2):
+def token2(test_user2, session):
+    session.query(models.User) \
+        .filter(models.User.id == test_user2["id"]) \
+        .update({models.User.last_action_time: datetime.utcnow()})    
+    session.commit()
     return create_access_token({"user_id": test_user2['id']})
 
 
@@ -85,10 +94,10 @@ def authorized_client1(client, token):
     return client
 
 @pytest.fixture
-def authorized_client2(client, token):
+def authorized_client2(client, token2):
     client.headers = {
         **client.headers,
-        "Authorization": f"Bearer {token}"
+        "Authorization": f"Bearer {token2}"
     }
     return client
 

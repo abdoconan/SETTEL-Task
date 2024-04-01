@@ -67,7 +67,7 @@ def create_book(book : sechemaes.BookBase
         .first()
         
         
-@router.post("/edit", response_model=sechemaes.BookGet, status_code= status.HTTP_201_CREATED)
+@router.put("/edit", response_model=sechemaes.BookGet, status_code= status.HTTP_200_OK)
 def edit_book(book_to_update : sechemaes.BookUpdate
                 , db: Session = Depends(database.get_db)
                 , current_user: models.User = Depends(oauth2.get_current_user)):
@@ -81,7 +81,7 @@ def edit_book(book_to_update : sechemaes.BookUpdate
     if not book_category_exists:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="book category doesn't exists")
     book.title = book_to_update.title
-    book.preif = book_to_update.preif
+    book.brief = book_to_update.brief
     book.category_id = book_to_update.category_id
     db.commit()
     return db.query(models.Book) \
