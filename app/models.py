@@ -34,7 +34,7 @@ class Book(Base):
     
     id = Column(Integer, primary_key=True,  nullable=False)
     title = Column(String(255), nullable=False)
-    preif = Column(String, nullable=False)
+    brief = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone= True), nullable=False, server_default= text('CURRENT_TIMESTAMP'))
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     category_id = Column(Integer, ForeignKey("book_categories.id", ondelete="CASCADE"), nullable=False)
